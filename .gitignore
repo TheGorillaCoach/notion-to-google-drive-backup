@@ -1,0 +1,121 @@
+# ===========================================================================
+# SECRETS & CREDENTIALS — never commit any of these
+# ===========================================================================
+
+# Environment files (keep only the template)
+.env
+.env.*
+*.env
+!.env.example
+
+# Google Cloud / service account keys
+credentials.json
+credentials*.json
+client_secret*.json
+service-account*.json
+service_account*.json
+*-service-account.json
+*sa-key*.json
+gcp-key*.json
+token.json
+token*.json
+*.p12
+*.pem
+*.key
+*.keystore
+*.jks
+
+# Catch-all secrets folder for local key files
+secrets/
+.secrets/
+
+# Cloud SDK / auth caches
+.config/gcloud/
+application_default_credentials.json
+.boto
+.netrc
+
+# ===========================================================================
+# BACKUP OUTPUT — exported Notion content may contain private data
+# ===========================================================================
+dist/
+backup/
+backups/
+export/
+exports/
+output/
+*.zip
+*.tar.gz
+
+# ===========================================================================
+# PYTHON
+# ===========================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+eggs/
+.eggs/
+*.egg-info/
+*.egg
+wheels/
+pip-wheel-metadata/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# Testing / coverage / type checking
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.dmypy.json
+dmypy.json
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ===========================================================================
+# LOGS & TEMP
+# ===========================================================================
+*.log
+logs/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~
+
+# ===========================================================================
+# EDITORS & OS
+# ===========================================================================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+desktop.ini
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Local helper tools
+tools/

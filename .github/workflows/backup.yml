@@ -1,0 +1,54 @@
+# Daily incremental Notion → Google Drive backup.
+#
+# Needs three repository secrets (Settings → Secrets and variables → Actions):
+#   NOTION_API_KEY               the Notion connection's API token
+#   GDRIVE_FOLDER_ID             the Shared Drive folder ID
+#   GDRIVE_SERVICE_ACCOUNT_JSON  the full contents of the service-account key file
+#
+# Each run starts with an empty disk: it downloads _manifest.json from Drive,
+# exports only pages edited since the last run, uploads them, and saves the
+# manifest back to Drive.
+name: Notion backup
+
+on:
+  schedule:
+    # Once a day at 10:17 UTC (2:17 AM Pacific in winter). Times are UTC.
+    # Off the top of the hour because GitHub delays runs scheduled at :00.
+    # For every 6 hours instead, use:  "17 4,10,16,22 * * *"
+    - cron: "17 10 * * *"
+  workflow_dispatch: {}   # adds a "Run workflow" button for manual runs
+
+# Never let two backups run at the same time.
+concurrency:
+  group: notion-backup
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340   # GitHub's hard limit is 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Back up Notion to Google Drive
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+          OUTPUT_DIR: ./dist
+        # Stop starting new page exports after 3 hours so the upload has time
+        # to finish inside GitHub's 6-hour job limit. Anything left over (only
+        # likely on the very first, full backup of a large workspace) is
+        # picked up automatically by the next run.
+        run: python main.py --time-budget 180
